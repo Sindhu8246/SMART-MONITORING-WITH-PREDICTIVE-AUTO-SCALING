@@ -1,0 +1,27 @@
+predictor.py
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+class CpuPredictor:
+    def __init__(self):
+        self.model = LinearRegression()
+        self.history = []
+
+    def update_history(self, value):
+        self.history.append(value)
+        if len(self.history) > 20:
+            self.history.pop(0)
+
+    def predict_next(self):
+        """
+        Predict the next CPU usage value based on previous readings.
+        Returns None if not enough data.
+        """
+        if len(self.history) < 5:
+            return None
+        
+        X = np.array(range(len(self.history))).reshape(-1, 1)
+        y = np.array(self.history)
+        self.model.fit(X, y)
+        next_idx = np.array([[len(self.history)]])
+        return self.model.predict(next_idx)[0]

@@ -1,0 +1,22 @@
+main.py
+import time
+from monitor import get_cpu_usage
+from predictor import CpuPredictor
+from autoscaler import AutoScaler
+
+def main():
+    predictor = CpuPredictor()
+    scaler = AutoScaler(min_instances=2, max_instances=5)
+
+    while True:
+        cpu = get_cpu_usage()
+        predictor.update_history(cpu)
+        prediction = predictor.predict_next()
+        instances = scaler.scale(prediction)
+
+        print(f"Current CPU: {cpu:.2f}% | Predicted: {prediction:.2f if prediction else 'N/A'} | Instances: {instances}")
+
+        time.sleep(5)
+
+if __name__ == "__main__":
+    main()

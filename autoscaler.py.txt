@@ -1,0 +1,20 @@
+autoscaler.py
+class AutoScaler:
+    def __init__(self, min_instances=1, max_instances=10):
+        self.min_instances = min_instances
+        self.max_instances = max_instances
+        self.current_instances = min_instances
+
+    def scale(self, predicted_cpu):
+        """
+        Simple threshold-based scaling logic.
+        """
+        if predicted_cpu is None:
+            return self.current_instances
+
+        if predicted_cpu > 70:
+            self.current_instances = min(self.current_instances + 1, self.max_instances)
+        elif predicted_cpu < 30:
+            self.current_instances = max(self.current_instances - 1, self.min_instances)
+
+        return self.current_instances
